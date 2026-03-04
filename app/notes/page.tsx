@@ -13,17 +13,18 @@ export default function NotesPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("All");
-  const [course, setCourse] = useState(""); // Build error fix ke liye state banayi
+  const [course, setCourse] = useState(""); 
   const { user, userData } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    // LocalStorage ab sirf browser mein chalega
-    const s = localStorage.getItem("eduNexDark");
-    if (s === "true") setDarkMode(true);
+    if (typeof window !== "undefined") {
+      const s = localStorage.getItem("eduNexDark");
+      if (s === "true") setDarkMode(true);
 
-    const savedCourse = userData?.course || localStorage.getItem("eduNexCourse") || "";
-    setCourse(savedCourse);
+      const savedCourse = userData?.course || localStorage.getItem("eduNexCourse") || "";
+      setCourse(savedCourse);
+    }
   }, [userData]);
 
   useEffect(() => {

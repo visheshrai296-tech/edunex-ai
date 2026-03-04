@@ -25,7 +25,7 @@ export default function AITutorPage() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState<{ role: string; parts: { text: string }[] }[]>([]);
-  const [course, setCourse] = useState("General"); // State banayi build error hatane ke liye
+  const [course, setCourse] = useState("General"); 
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const { user, userData } = useAuth();
@@ -34,12 +34,13 @@ export default function AITutorPage() {
   const userName = userData?.name || user?.displayName || "Student";
 
   useEffect(() => {
-    // LocalStorage ab sirf browser mein chalega
-    const s = localStorage.getItem("eduNexDark");
-    if (s === "true") setDarkMode(true);
+    if (typeof window !== "undefined") {
+      const s = localStorage.getItem("eduNexDark");
+      if (s === "true") setDarkMode(true);
 
-    const savedCourse = userData?.course || localStorage.getItem("eduNexCourse") || "General";
-    setCourse(savedCourse);
+      const savedCourse = userData?.course || localStorage.getItem("eduNexCourse") || "General";
+      setCourse(savedCourse);
+    }
   }, [userData]);
 
   useEffect(() => {
