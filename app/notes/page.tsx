@@ -13,19 +13,16 @@ export default function NotesPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("All");
-  const [course, setCourse] = useState(""); 
   const { user, userData } = useAuth();
   const router = useRouter();
+  const course = userData?.course || (typeof window !== "undefined" ? localStorage.getItem("eduNexCourse") : "") || "";
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const s = localStorage.getItem("eduNexDark");
       if (s === "true") setDarkMode(true);
-
-      const savedCourse = userData?.course || localStorage.getItem("eduNexCourse") || "";
-      setCourse(savedCourse);
     }
-  }, [userData]);
+  }, []);
 
   useEffect(() => {
     if (!user || !course) return;
@@ -71,11 +68,16 @@ export default function NotesPage() {
         .back-btn{padding:7px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:0.82rem;font-weight:700;color:var(--sub);transition:0.2s;font-family:'Plus Jakarta Sans',sans-serif;}
         .back-btn:hover{color:var(--text);}
         .theme-btn{width:36px;height:36px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;}
+
         .page{max-width:1100px;margin:0 auto;padding:32px 5% 80px;}
+
+        /* HEADER */
         .page-header{margin-bottom:28px;}
         .page-label{font-size:0.72rem;font-weight:800;color:#818cf8;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;}
         .page-title{font-family:'Bricolage Grotesque',sans-serif;font-size:2rem;font-weight:800;margin-bottom:6px;}
         .page-sub{font-size:0.88rem;color:var(--sub);}
+
+        /* SEARCH + FILTER */
         .controls{display:flex;gap:12px;margin-bottom:28px;flex-wrap:wrap;}
         .search-wrap{flex:1;min-width:200px;position:relative;}
         .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:0.9rem;color:var(--sub);}
@@ -87,6 +89,8 @@ export default function NotesPage() {
         .filter-btn{padding:8px 16px;border-radius:100px;font-size:0.78rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:0.2s;border:1.5px solid var(--border);background:var(--surface);color:var(--sub);font-family:'Plus Jakarta Sans',sans-serif;}
         .filter-btn.active{background:linear-gradient(135deg,#4f46e5,#0d9488);color:white;border-color:transparent;}
         .filter-btn:hover:not(.active){border-color:var(--brand);color:var(--brand);}
+
+        /* NOTES GRID */
         .notes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
         .note-card{background:var(--surface);border:1.5px solid var(--border);border-radius:20px;padding:22px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;}
         .note-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#4f46e5,#0d9488);}
@@ -98,10 +102,14 @@ export default function NotesPage() {
         .nc-title{font-family:'Bricolage Grotesque',sans-serif;font-size:0.95rem;font-weight:800;margin-bottom:8px;line-height:1.3;}
         .nc-subject{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;background:rgba(13,148,136,0.1);color:var(--accent);border-radius:100px;font-size:0.7rem;font-weight:700;margin-bottom:10px;}
         .nc-date{font-size:0.7rem;color:var(--sub);}
+
+        /* EMPTY */
         .empty{background:var(--surface);border:1.5px dashed var(--border);border-radius:20px;padding:60px 20px;text-align:center;}
         .empty-icon{font-size:3rem;opacity:0.2;margin-bottom:14px;}
         .empty-title{font-family:'Bricolage Grotesque',sans-serif;font-size:1.1rem;font-weight:800;opacity:0.4;margin-bottom:6px;}
         .empty-sub{font-size:0.82rem;color:var(--sub);}
+
+        /* SKELETON */
         .skel{background:${dm?"rgba(255,255,255,0.05)":"rgba(79,70,229,0.05)"};border-radius:20px;animation:shimmer 1.5s infinite;}
         @keyframes shimmer{0%,100%{opacity:1}50%{opacity:0.4}}
         @media(max-width:640px){.notes-grid{grid-template-columns:1fr;}}

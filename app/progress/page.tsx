@@ -14,11 +14,13 @@ export default function ProgressPage() {
   const [loading, setLoading] = useState(true);
   const { user, userData } = useAuth();
   const router = useRouter();
-  const course = userData?.course || localStorage.getItem("eduNexCourse") || "";
+  const course = userData?.course || (typeof window !== "undefined" ? localStorage.getItem("eduNexCourse") : "") || "";
 
   useEffect(() => {
-    const s = localStorage.getItem("eduNexDark");
-    if (s === "true") setDarkMode(true);
+    if (typeof window !== "undefined") {
+      const s = localStorage.getItem("eduNexDark");
+      if (s === "true") setDarkMode(true);
+    }
   }, []);
 
   useEffect(() => {

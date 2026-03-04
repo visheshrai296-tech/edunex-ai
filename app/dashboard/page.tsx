@@ -39,9 +39,11 @@ export default function Dashboard() {
   const router = useRouter();
 
   useEffect(() => {
-    const savedDark = localStorage.getItem("eduNexDark");
-    if (savedDark === "true") setDarkMode(true);
-    const savedCourse = userData?.course || localStorage.getItem("eduNexCourse") || "";
+    if (typeof window !== "undefined") {
+      const savedDark = localStorage.getItem("eduNexDark");
+      if (savedDark === "true") setDarkMode(true);
+    }
+    const savedCourse = userData?.course || (typeof window !== "undefined" ? localStorage.getItem("eduNexCourse") : "") || "";
     if (savedCourse) setCourse(savedCourse);
     const h = new Date().getHours();
     setGreeting(h < 12 ? "Good Morning" : h < 17 ? "Good Afternoon" : "Good Evening");

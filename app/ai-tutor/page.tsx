@@ -25,23 +25,20 @@ export default function AITutorPage() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState<{ role: string; parts: { text: string }[] }[]>([]);
-  const [course, setCourse] = useState("General"); 
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const { user, userData } = useAuth();
   const router = useRouter();
 
+  const course = userData?.course || localStorage.getItem("eduNexCourse") || "General";
   const userName = userData?.name || user?.displayName || "Student";
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const s = localStorage.getItem("eduNexDark");
       if (s === "true") setDarkMode(true);
-
-      const savedCourse = userData?.course || localStorage.getItem("eduNexCourse") || "General";
-      setCourse(savedCourse);
     }
-  }, [userData]);
+  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -134,7 +131,11 @@ Guidelines:
           --ai-bg:${dm?"#161d2e":"#ffffff"};
         }
         body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;}
+
+        /* LAYOUT */
         .layout{display:flex;flex-direction:column;height:100vh;}
+
+        /* NAV */
         .nav{height:60px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;}
         .nav-left{display:flex;align-items:center;gap:12px;}
         .back-btn{width:34px;height:34px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:var(--sub);transition:0.2s;}
@@ -145,10 +146,14 @@ Guidelines:
         .clear-btn{padding:6px 14px;background:transparent;border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:0.75rem;font-weight:700;color:var(--sub);transition:0.2s;font-family:'Plus Jakarta Sans',sans-serif;}
         .clear-btn:hover{border-color:rgba(239,68,68,0.3);color:#ef4444;}
         .theme-btn{width:34px;height:34px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;}
+
+        /* CHAT AREA */
         .chat-area{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;}
         .chat-area::-webkit-scrollbar{width:4px;}
         .chat-area::-webkit-scrollbar-track{background:transparent;}
         .chat-area::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px;}
+
+        /* WELCOME */
         .welcome{text-align:center;padding:40px 20px;max-width:560px;margin:0 auto;}
         .welcome-icon{width:72px;height:72px;border-radius:24px;background:linear-gradient(135deg,#4f46e5,#0d9488);display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto 20px;box-shadow:0 12px 30px rgba(79,70,229,0.3);}
         .welcome h2{font-family:'Bricolage Grotesque',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:8px;}
@@ -156,6 +161,8 @@ Guidelines:
         .suggestions{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:left;}
         .suggestion{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:12px 14px;cursor:pointer;font-size:0.8rem;font-weight:600;color:var(--sub);transition:0.2s;line-height:1.4;}
         .suggestion:hover{border-color:var(--brand);color:var(--text);background:${dm?"rgba(99,102,241,0.06)":"rgba(79,70,229,0.03)"};}
+
+        /* MESSAGES */
         .msg-row{display:flex;gap:10px;align-items:flex-end;animation:fadeUp 0.2s ease;}
         .msg-row.user{flex-direction:row-reverse;}
         .msg-avatar{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:800;}
@@ -166,11 +173,15 @@ Guidelines:
         .msg-bubble.user{background:linear-gradient(135deg,#4f46e5,#0d9488);color:white;border-bottom-right-radius:4px;}
         .msg-time{font-size:0.65rem;color:var(--sub);margin-top:4px;text-align:right;}
         .msg-time.ai{text-align:left;}
+
+        /* TYPING */
         .typing{display:flex;align-items:center;gap:4px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:18px;border-bottom-left-radius:4px;width:fit-content;}
         .typing span{width:7px;height:7px;border-radius:50%;background:var(--brand);animation:bounce 1.2s infinite;}
         .typing span:nth-child(2){animation-delay:0.2s;}
         .typing span:nth-child(3){animation-delay:0.4s;}
         @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+        /* INPUT */
         .input-area{background:var(--surface);border-top:1px solid var(--border);padding:14px 16px;flex-shrink:0;}
         .input-wrap{max-width:800px;margin:0 auto;display:flex;gap:10px;align-items:flex-end;background:var(--surface2);border:1.5px solid var(--border);border-radius:16px;padding:10px 14px;transition:0.2s;}
         .input-wrap:focus-within{border-color:var(--brand);box-shadow:0 0 0 3px ${dm?"rgba(99,102,241,0.1)":"rgba(79,70,229,0.06)"};}
@@ -179,11 +190,13 @@ Guidelines:
         .send-btn{width:38px;height:38px;border-radius:12px;background:${loading?"var(--surface)":"linear-gradient(135deg,#4f46e5,#0d9488)"};border:none;color:white;cursor:${loading?"not-allowed":"pointer"};display:flex;align-items:center;justify-content:center;font-size:1rem;transition:0.2s;flex-shrink:0;}
         .send-btn:hover:not(:disabled){transform:scale(1.05);}
         .input-hint{text-align:center;font-size:0.68rem;color:var(--sub);margin-top:8px;}
+
         @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
         @media(max-width:600px){.suggestions{grid-template-columns:1fr;}.msg-bubble{max-width:88%;}}
       `}</style>
 
       <div className="layout">
+        {/* NAV */}
         <nav className="nav">
           <div className="nav-left">
             <button className="back-btn" onClick={() => router.push("/dashboard")}>←</button>
@@ -200,12 +213,13 @@ Guidelines:
           </div>
         </nav>
 
+        {/* CHAT */}
         <div className="chat-area">
           {messages.length === 0 ? (
             <div className="welcome">
               <div className="welcome-icon">✦</div>
               <h2>Hey {userName.split(" ")[0]}! 👋</h2>
-              <p>I&apos;m your AI Tutor, here to help with any doubt — Math, Science, Hindi, English, Programming and more. Ask me anything!</p>
+              <p>I'm your AI Tutor, here to help with any doubt — Math, Science, Hindi, English, Programming and more. Ask me anything!</p>
               <div className="suggestions">
                 {SUGGESTIONS.map((s, i) => (
                   <div key={i} className="suggestion" onClick={() => sendMessage(s)}>💬 {s}</div>
@@ -241,6 +255,7 @@ Guidelines:
           <div ref={bottomRef} />
         </div>
 
+        {/* INPUT */}
         <div className="input-area">
           <div className="input-wrap">
             <textarea
