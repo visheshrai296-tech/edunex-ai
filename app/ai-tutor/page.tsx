@@ -30,13 +30,15 @@ export default function AITutorPage() {
   const { user, userData } = useAuth();
   const router = useRouter();
 
-  const course = userData?.course || localStorage.getItem("eduNexCourse") || "General";
+  const course = userData?.course || (typeof window !== "undefined" ? localStorage.getItem("eduNexCourse") : "") || "General";
   const userName = userData?.name || user?.displayName || "Student";
 
   useEffect(() => {
     if (typeof window !== "undefined") {
+      if (typeof window !== "undefined") {
       const s = localStorage.getItem("eduNexDark");
       if (s === "true") setDarkMode(true);
+    }
     }
   }, []);
 
